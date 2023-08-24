@@ -1,0 +1,11 @@
+correct = 0
+total = 0
+with torch.no_grad():
+    for frames, labels in validation_dataloader:
+        outputs = lip_reading_model(frames)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+accuracy = 100 * correct / total
+print(f"Validation Accuracy: {accuracy:.2f}%")

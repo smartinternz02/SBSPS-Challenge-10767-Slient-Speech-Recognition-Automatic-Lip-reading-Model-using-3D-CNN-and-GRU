@@ -1,0 +1,72 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset
+import torchvision.transforms as transforms
+import cv2
+import numpy as np
+
+# Define the 3D CNN architecture
+class CNN3D(nn.Module):
+    # ... (same as previously defined)
+
+# Define the Lip Reading model combining 3D CNN and GRU
+class LipReadingModel(nn.Module):
+    # ... (same as previously defined)
+
+# Define a custom dataset class for loading video frames and labels
+class LipReadingDataset(Dataset):
+    def __init__(self, data_paths, labels, transform=None):
+        # Initialize with video paths and labels
+        
+    def __len__(self):
+        # Return the number of samples
+    
+    def __getitem__(self, idx):
+        # Load video frames, preprocess, and return along with labels
+
+# Define transforms for video frame preprocessing
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize((64, 64)),
+])
+
+# Define paths to dataset and other configurations
+data_paths = # List of video paths
+labels = # List of corresponding labels
+batch_size = 16
+num_epochs = 10
+
+# Create instances of dataset and dataloader
+dataset = LipReadingDataset(data_paths, labels, transform=transform)
+dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+# Initialize 3D CNN and Lip Reading Model
+cnn_3d = CNN3D()
+num_classes = len(set(labels))
+lip_reading_model = LipReadingModel(num_classes, cnn_3d)
+
+# Define loss function and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(lip_reading_model.parameters(), lr=0.001)
+
+# Training loop
+for epoch in range(num_epochs):
+    running_loss = 0.0
+    for frames, labels in dataloader:
+        optimizer.zero_grad()
+        outputs = lip_reading_model(frames)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+    print(f"Epoch [{epoch+1}/{num_epochs}] - Loss: {running_loss / len(dataloader)}")
+
+# Validation loop (similar to training loop)
+# ...
+
+# Test loop (similar to training loop)
+# ...
+
+# Save the trained model
+torch.save(lip_reading_model.state_dict(), "lip_reading_model.pth")
